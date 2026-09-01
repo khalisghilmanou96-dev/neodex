@@ -1,0 +1,36 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>NeoDex ☄️ — NASA NeoWs</title>
+<style>
+:root{--bg:#071018;--p:#0d1c28;--p2:#122838;--txt:#f3fbff;--mut:#93b1c2;--a:#48d7ff;--b:#ff735c;--ok:#65e0a3;--line:#204052}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 85% 0,#123f55 0,transparent 31%),var(--bg);color:var(--txt);font:15px system-ui,sans-serif}.wrap{max-width:1200px;margin:auto;padding:22px}
+header{display:flex;justify-content:space-between;align-items:center}.logo{font-size:26px;font-weight:1000}.logo b{color:var(--a)}.pill{border:1px solid var(--line);border-radius:99px;padding:8px 12px;color:var(--mut)}
+.hero{margin:22px 0;padding:32px;border:1px solid var(--line);border-radius:25px;background:linear-gradient(125deg,#102737,#16465b)}h1{font-size:clamp(38px,6vw,67px);line-height:.95;margin:0}.hero p{color:var(--mut);font-size:17px;max-width:760px}
+.controls{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}input,button{padding:12px 14px;border-radius:12px;font:inherit}input{background:var(--p);border:1px solid var(--line);color:var(--txt)}button{border:0;background:var(--a);color:#04212b;font-weight:900;cursor:pointer}.secondary{background:var(--p2);color:var(--txt);border:1px solid var(--line)}
+.summary{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:16px 0}.metric{background:var(--p);border:1px solid var(--line);border-radius:17px;padding:17px}.metric span{display:block;color:var(--mut)}.metric b{font-size:27px}
+.status{color:var(--mut);margin:12px 0}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:13px}.card{background:var(--p);border:1px solid var(--line);border-radius:18px;padding:17px}.top{display:flex;justify-content:space-between;gap:10px}.name{font-size:19px;font-weight:900}.haz{font-size:11px;font-weight:900;padding:6px 8px;border-radius:99px;background:#3b1d20;color:#ff9a89;height:max-content}.safe{background:#12372c;color:var(--ok)}.date{color:var(--a);font-weight:800;margin:8px 0}.rows{display:grid;gap:7px}.row{display:flex;justify-content:space-between;background:var(--p2);padding:9px;border-radius:9px}.row span{color:var(--mut)}footer{margin-top:30px;border-top:1px solid var(--line);padding:20px 0;color:#6e91a5}@media(max-width:650px){.summary{grid-template-columns:1fr}.pill{display:none}}
+</style></head><body><div class="wrap"><header><div class="logo">NEO<b>DEX</b> ☄️</div><div class="pill">NASA NeoWs · frontend direct</div></header>
+<section class="hero"><h1>Astéroïdes<br>près de la Terre.</h1><p>Suivi des objets géocroiseurs : date d’approche, diamètre estimé, vitesse, distance à la Terre et indicateur NASA de danger potentiel.</p></section>
+<div class="controls"><input id="start" type="date"><input id="end" type="date"><button id="load">Afficher</button><button id="today" class="secondary">Aujourd’hui</button><button id="week" class="secondary">7 jours</button></div>
+<div id="status" class="status">Chargement des approches…</div><section class="summary"><div class="metric"><span>Astéroïdes</span><b id="count">—</b></div><div class="metric"><span>Potentiellement dangereux</span><b id="danger">—</b></div><div class="metric"><span>Plus proche</span><b id="nearest">—</b></div></section><main id="grid" class="grid"></main>
+<footer>NeoDex · NASA Near Earth Object Web Service · données NASA/JPL.</footer></div>
+<script>
+const BASE="https://api.nasa.gov/neo/rest/v1/feed?api_key=DEMO_KEY",$=s=>document.querySelector(s),esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+const iso=d=>d.toISOString().slice(0,10),now=new Date();$("#start").value=iso(now);$("#end").value=iso(now);
+async function get(url){const c=new AbortController(),t=setTimeout(()=>c.abort(),12000);try{const r=await fetch(url,{signal:c.signal});if(!r.ok)throw Error("NASA API "+r.status);return await r.json()}finally{clearTimeout(t)}}
+function num(v,d=0){return Number(v||0).toLocaleString("fr-FR",{maximumFractionDigits:d})}
+async function load(){
+ let a=$("#start").value,b=$("#end").value;if(!a||!b)return;
+ if(new Date(b)<new Date(a)){[a,b]=[b,a];$("#start").value=a;$("#end").value=b}
+ if((new Date(b)-new Date(a))/86400000>7){$("#status").textContent="La plage NASA NeoWs est limitée à 7 jours maximum.";return}
+ $("#status").textContent="Chargement NASA NeoWs…";
+ try{
+  const d=await get(`${BASE}&start_date=${a}&end_date=${b}`),all=[];
+  Object.entries(d.near_earth_objects||{}).forEach(([date,xs])=>xs.forEach(x=>all.push({...x,_date:date})));
+  all.sort((x,y)=>Number(x.close_approach_data?.[0]?.miss_distance?.kilometers||1e30)-Number(y.close_approach_data?.[0]?.miss_distance?.kilometers||1e30));
+  $("#count").textContent=all.length;$("#danger").textContent=all.filter(x=>x.is_potentially_hazardous_asteroid).length;
+  const nearest=all[0]?.close_approach_data?.[0]?.miss_distance?.kilometers;$("#nearest").textContent=nearest?num(nearest/1000000,2)+" M km":"—";
+  $("#grid").innerHTML=all.map(x=>{const c=x.close_approach_data?.[0]||{},dia=x.estimated_diameter?.meters||{},haz=x.is_potentially_hazardous_asteroid;return `<article class="card"><div class="top"><div class="name">${esc(x.name)}</div><div class="haz ${haz?"":"safe"}">${haz?"DANGER POTENTIEL":"NON DANGEREUX"}</div></div><div class="date">Approche · ${esc(x._date)}</div><div class="rows"><div class="row"><span>Diamètre estimé</span><b>${num(dia.estimated_diameter_min)}–${num(dia.estimated_diameter_max)} m</b></div><div class="row"><span>Distance</span><b>${num(c.miss_distance?.kilometers)} km</b></div><div class="row"><span>Distance lunaire</span><b>${num(c.miss_distance?.lunar,2)} LD</b></div><div class="row"><span>Vitesse</span><b>${num(c.relative_velocity?.kilometers_per_hour)} km/h</b></div><div class="row"><span>Magnitude</span><b>${num(x.absolute_magnitude_h,2)}</b></div></div></article>`}).join("");
+  $("#status").textContent=`${all.length} objets détectés du ${a} au ${b}.`;
+ }catch(e){$("#status").textContent="Impossible de charger NeoWs pour le moment : "+e.message}
+}
+$("#load").onclick=load;$("#today").onclick=()=>{$("#start").value=iso(new Date());$("#end").value=iso(new Date());load()};$("#week").onclick=()=>{let a=new Date(),b=new Date();b.setDate(b.getDate()+7);$("#start").value=iso(a);$("#end").value=iso(b);load()};load();
+</script></body></html>
