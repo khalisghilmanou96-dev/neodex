@@ -7,10 +7,62 @@ header{display:flex;justify-content:space-between;align-items:center}.logo{font-
 .controls{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}input,button{padding:12px 14px;border-radius:12px;font:inherit}input{background:var(--p);border:1px solid var(--line);color:var(--txt)}button{border:0;background:var(--a);color:#04212b;font-weight:900;cursor:pointer}.secondary{background:var(--p2);color:var(--txt);border:1px solid var(--line)}
 .summary{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:16px 0}.metric{background:var(--p);border:1px solid var(--line);border-radius:17px;padding:17px}.metric span{display:block;color:var(--mut)}.metric b{font-size:27px}
 .status{color:var(--mut);margin:12px 0}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:13px}.card{background:var(--p);border:1px solid var(--line);border-radius:18px;padding:17px}.top{display:flex;justify-content:space-between;gap:10px}.name{font-size:19px;font-weight:900}.haz{font-size:11px;font-weight:900;padding:6px 8px;border-radius:99px;background:#3b1d20;color:#ff9a89;height:max-content}.safe{background:#12372c;color:var(--ok)}.date{color:var(--a);font-weight:800;margin:8px 0}.rows{display:grid;gap:7px}.row{display:flex;justify-content:space-between;background:var(--p2);padding:9px;border-radius:9px}.row span{color:var(--mut)}footer{margin-top:30px;border-top:1px solid var(--line);padding:20px 0;color:#6e91a5}@media(max-width:650px){.summary{grid-template-columns:1fr}.pill{display:none}}
+.ad-zone{width:100%;display:flex;justify-content:center;align-items:center;margin:30px auto;overflow:hidden}
+.ad-desktop{display:block;max-width:728px}.ad-mobile{display:none;max-width:320px}.ad-square{min-height:250px}
+@media(max-width:900px){.ad-desktop{display:none}.ad-mobile{display:block}}
 </style></head><body><div class="wrap"><header><div class="logo">NEO<b>DEX</b> ☄️</div><div class="pill">NASA NeoWs · frontend direct</div></header>
 <section class="hero"><h1>Astéroïdes<br>près de la Terre.</h1><p>Suivi des objets géocroiseurs : date d’approche, diamètre estimé, vitesse, distance à la Terre et indicateur NASA de danger potentiel.</p></section>
+
+<section class="ad-zone" aria-label="Publicité">
+  <div class="ad-desktop">
+    <script>
+      atOptions={'key':'189164e4eb4f64ff295d1be6580bdbb7','format':'iframe','height':90,'width':728,'params':{}};
+    </script>
+    <script src="https://www.highrevenueformat.com/189164e4eb4f64ff295d1be6580bdbb7/invoke.js"></script>
+  </div>
+  <div class="ad-mobile">
+    <script>
+      atOptions={'key':'3e11a875f55175f609f43f8029226465','format':'iframe','height':50,'width':320,'params':{}};
+    </script>
+    <script src="https://www.highrevenueformat.com/3e11a875f55175f609f43f8029226465/invoke.js"></script>
+  </div>
+</section>
+
 <div class="controls"><input id="start" type="date"><input id="end" type="date"><button id="load">Afficher</button><button id="today" class="secondary">Aujourd’hui</button><button id="week" class="secondary">7 jours</button></div>
-<div id="status" class="status">Chargement des approches…</div><section class="summary"><div class="metric"><span>Astéroïdes</span><b id="count">—</b></div><div class="metric"><span>Potentiellement dangereux</span><b id="danger">—</b></div><div class="metric"><span>Plus proche</span><b id="nearest">—</b></div></section><main id="grid" class="grid"></main>
+<div id="status" class="status">Chargement des approches…</div>
+
+<section class="ad-zone ad-square" aria-label="Publicité">
+  <script>
+    atOptions={'key':'c1c01832781de38b8610ca6b4ec17e55','format':'iframe','height':250,'width':300,'params':{}};
+  </script>
+  <script src="https://www.highrevenueformat.com/c1c01832781de38b8610ca6b4ec17e55/invoke.js"></script>
+</section>
+
+<section class="summary"><div class="metric"><span>Astéroïdes</span><b id="count">—</b></div><div class="metric"><span>Potentiellement dangereux</span><b id="danger">—</b></div><div class="metric"><span>Plus proche</span><b id="nearest">—</b></div></section>
+<main id="grid" class="grid"></main>
+
+<section class="ad-zone ad-square" aria-label="Publicité">
+  <script>
+    atOptions={'key':'c1c01832781de38b8610ca6b4ec17e55','format':'iframe','height':250,'width':300,'params':{}};
+  </script>
+  <script src="https://www.highrevenueformat.com/c1c01832781de38b8610ca6b4ec17e55/invoke.js"></script>
+</section>
+
+<section class="ad-zone" aria-label="Publicité">
+  <div class="ad-desktop">
+    <script>
+      atOptions={'key':'189164e4eb4f64ff295d1be6580bdbb7','format':'iframe','height':90,'width':728,'params':{}};
+    </script>
+    <script src="https://www.highrevenueformat.com/189164e4eb4f64ff295d1be6580bdbb7/invoke.js"></script>
+  </div>
+  <div class="ad-mobile">
+    <script>
+      atOptions={'key':'3e11a875f55175f609f43f8029226465','format':'iframe','height':50,'width':320,'params':{}};
+    </script>
+    <script src="https://www.highrevenueformat.com/3e11a875f55175f609f43f8029226465/invoke.js"></script>
+  </div>
+</section>
+
 <footer>NeoDex · NASA Near Earth Object Web Service · données NASA/JPL.</footer></div>
 <script>
 const BASE="https://api.nasa.gov/neo/rest/v1/feed?api_key=DEMO_KEY",$=s=>document.querySelector(s),esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
